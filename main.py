@@ -7,7 +7,7 @@ from geopy import distance
 
 API_KEY = "3cdef1e4-b3f0-4276-86e0-9fcb8524fbbe"
 BARS_FILE = 'bars.json'
-DEBUG = True
+DEBUG = False
 HTML_FILE = 'index.html'
 
 
