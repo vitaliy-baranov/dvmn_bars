@@ -1,12 +1,14 @@
 import json
+import os
 
 import folium
 import requests
+from dotenv import load_dotenv
 from flask import Flask
 from geopy import distance
 
-API_KEY = "3cdef1e4-b3f0-4276-86e0-9fcb8524fbbe"
 BARS_FILE = 'bars.json'
+BARS_QUANTITY = 5
 DEBUG = False
 HTML_FILE = 'index.html'
 
@@ -22,35 +24,29 @@ def fetch_coordinates(apikey, place):
     return lon, lat
 
 
-def get_user_coordinates():
-    if DEBUG:
-        return ('37.432672', '55.845067') #  Москва Аэродромная 4
-    else:
-        place_start = input("Где вы находитесь? ")
-        return fetch_coordinates(API_KEY, place_start)
+def get_user_coordinates(api_key):
+    place_start = input("Где вы находитесь? ")
+    return fetch_coordinates(api_key, place_start)
 
 
-def count_distance(start_coordinates, finish_coordinates):
-    return distance.distance(tuple(reversed(start_coordinates)), tuple(reversed(finish_coordinates))).km
-
-
-def convert_with_distance(bar, user_coordinates):
-    return {
-        'title': bar['Name'],
-        'longitude': bar['Longitude_WGS84'],
-        'latitude': bar['Latitude_WGS84'],
-        'distance': count_distance(bar['geoData']['coordinates'], user_coordinates)
-    }
-
-
-def fetch_bars_with_distance(user_coordinates):
-    with open("bars.json", "r", encoding="CP1251") as f:
-        bars_raw = f.read()
-    bars = json.loads(bars_raw)
+def fetch_bars_with_distance(bars, user_coordinates):
     bars_with_distance = []
     for bar in bars:
-        bars_with_distance.append(convert_with_distance(bar, user_coordinates))
+        bars_with_distance.append(
+            {
+                'title': bar['Name'],
+                'longitude': bar['Longitude_WGS84'],
+                'latitude': bar['Latitude_WGS84'],
+                'distance': distance.distance(tuple(reversed(bar['geoData']['coordinates'])),
+                                              tuple(reversed(user_coordinates)))
+            })
     return bars_with_distance
+
+
+def get_bars_from_file(bars):
+    with open("bars.json", "r", encoding="CP1251") as f:
+        bars_raw = f.read()
+    return json.loads(bars_raw)
 
 
 def print_to_map(user_coordinates, closest_bars):
@@ -75,9 +71,11 @@ def get_closests_bars():
 
 
 if __name__ == '__main__':
-    user_coordinates = get_user_coordinates()
-    bars_with_distance = fetch_bars_with_distance(user_coordinates)
-    closest_bars = sorted(bars_with_distance, key=lambda bar: bar['distance'])[0:5]
+    load_dotenv()
+    user_coordinates = get_user_coordinates(os.getenv("API_KEY"))
+    bars = get_bars_from_file(BARS_FILE)
+    bars_with_distance = fetch_bars_with_distance(bars, user_coordinates)
+    closest_bars = sorted(bars_with_distance, key=lambda bar: bar['distance'])[0:BARS_QUANTITY]
     print_to_map(user_coordinates, closest_bars)
     app = Flask(__name__)
     app.add_url_rule('/', 'Closests bars', get_closests_bars)

@@ -3,6 +3,7 @@ This is a training project (www.dvmn.org) that shows bars closest to provided lo
 ## Getting Started
 ### Prerequisites
 * python3.6+
+* API_KEY for HTTP Geokoder from https://developer.tech.yandex.ru/services/3/
 ### Installation
  Clone the repo
 ```sh
@@ -22,7 +23,7 @@ python3 -m pip install -r requirements.txt
 ## Usage
 
 ```sh
-python main.py
+API_KEY=xxxx-xxxx-xxxx python main.py
 firefox localhost:5000
 ```
 ## License
