@@ -1,3 +1,4 @@
+#Find a bar
 ##About the project
 This is a training project (www.dvmn.org) that shows bars closest to provided location.
 ## Getting Started

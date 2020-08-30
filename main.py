@@ -9,7 +9,6 @@ from geopy import distance
 
 BARS_FILE = 'bars.json'
 BARS_QUANTITY = 5
-DEBUG = False
 HTML_FILE = 'index.html'
 
 
@@ -44,7 +43,7 @@ def fetch_bars_with_distance(bars, user_coordinates):
 
 
 def get_bars_from_file(bars):
-    with open("bars.json", "r", encoding="CP1251") as f:
+    with open(bars, "r", encoding="CP1251") as f:
         bars_raw = f.read()
     return json.loads(bars_raw)
 
