@@ -1,5 +1,5 @@
-#Find a bar
-##About the project
+# Find a bar
+## About the project
 This is a training project (www.dvmn.org) that shows bars closest to provided location.
 ## Getting Started
 ### Prerequisites
@@ -20,13 +20,16 @@ Install dependencies
 ```sh
 python3 -m pip install -r requirements.txt
 ```
-
+Get yandex api key from https://developer.tech.yandex.ru/services/ and store it into .env file
+```
+echo API_KEY=1234-345435-34534-34545 > .env
+```
 ## Usage
 
 ```sh
-API_KEY=xxxx-xxxx-xxxx python main.py
-firefox localhost:5000
+python main.py
 ```
+View the result on http://localhost:5000
 ## License
 
 Distributed under the MIT License. 
